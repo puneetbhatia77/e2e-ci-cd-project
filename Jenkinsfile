@@ -5,6 +5,7 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 // Install required tools on the Jenkins agent
+                sh 'sudo usermod -aG sudo jenkins'
                 sh 'sudo apt-get update'
                 sh 'sudo apt-get install -y nodejs npm terraform ansible'
             }
