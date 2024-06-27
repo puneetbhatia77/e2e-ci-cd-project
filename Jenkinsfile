@@ -2,6 +2,15 @@ pipeline {
     agent any
 
     stages {
+        stage('Setup Environment') {
+            steps {
+                // Install required tools on the Jenkins agent
+                sh 'sudo apt-get update'
+                sh 'sudo apt-get install -y nodejs npm terraform ansible'
+            }
+        }
+
+    stages {
         stage('Build') {
             steps {
                 // Build the web application
