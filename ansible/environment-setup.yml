@@ -1,0 +1,21 @@
+- hosts: all
+  tasks:
+    - name: Install Node.js and npm
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+        update_cache: yes
+
+    - name: Install Terraform
+      apt:
+        name: terraform
+        state: present
+        update_cache: yes
+
+    - name: Install Ansible
+      apt:
+        name: ansible
+        state: present
+        update_cache: yes
