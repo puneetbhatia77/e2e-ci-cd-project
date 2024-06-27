@@ -7,7 +7,7 @@ pipeline {
                 // Use Ansible to set up the development environment
                 ansiblePlaybook(
                     playbook: 'ansible/environment-setup.yml',
-                    inventory: 'ansible/hosts'
+                    inventory: 'ansible/hosts/jenkins-agent.txt'
                 )
             }
         }
