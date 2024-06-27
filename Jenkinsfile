@@ -10,7 +10,6 @@ pipeline {
             }
         }
 
-    stages {
         stage('Build') {
             steps {
                 // Build the web application
