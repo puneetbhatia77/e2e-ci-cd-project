@@ -15,9 +15,10 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the web application
-                sh 'cd app'
-                sh 'npm ci'
-                sh 'npm run build'
+                dir("app") {
+                    sh 'npm ci'
+                    sh 'npm run build'
+                }
             }
         }
 
