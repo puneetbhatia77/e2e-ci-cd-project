@@ -4,10 +4,11 @@ pipeline {
     stages {
         stage('Setup Environment') {
             steps {
-                // Use Ansible to set up the development environment
-                ansiblePlaybook(
-                    playbook: 'ansible/environment-setup.yml',
-                    inventory: 'ansible/hosts/jenkins-agent.txt'
+                sh 'sudo apt-get update'
+                sh 'sudo sudo apt-get install -y gnupg software-properties-common curl'
+                sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
+                sh 'sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
+                sh 'sudo apt-get install -y nodejs npm terraform ansible'
                 )
             }
         }
