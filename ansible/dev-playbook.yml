@@ -1,8 +1,10 @@
 # dev-playbook.yml
 - hosts: all
+  become: yes
   tasks:
     - name: Install Node.js
       apt:
+        update_cache: yes
         name: nodejs
         state: present
 
