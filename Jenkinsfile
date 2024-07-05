@@ -2,7 +2,7 @@ pipeline {
     agent any
  environment {
         ANSIBLE_INVENTORY = 'inventory.ini'
-        DOCKER_IMAGE = 'mynodejs-app"
+        DOCKER_IMAGE = 'mynodejs-app'
     }
     stages {
         stage('Setup Environment') {
