@@ -3,6 +3,7 @@ pipeline {
  environment {
         ANSIBLE_INVENTORY = 'inventory.ini'
         DOCKER_IMAGE = 'mynodejs-app'
+        ANSIBLE_HOST_KEY_CHECKING=False
     }
     stages {
         stage('Setup Environment') {
