@@ -1,7 +1,7 @@
 pipeline {
     agent any
  environment {
-        ANSIBLE_INVENTORY = '${env.WORKSPACE}/$inventory.ini'
+        ANSIBLE_INVENTORY = 'inventory.ini'
         DOCKER_IMAGE = 'mynodejs-app'
     }
     stages {
@@ -32,7 +32,7 @@ pipeline {
                         password = sh(script: 'terraform output -raw admin_password', returnStdout: true).trim()
 
                         // Write the inventory file
-                        writeFile file: "${ANSIBLE_INVENTORY}", text: """
+                        writeFile file: "${env.WORKSPACE}/${ANSIBLE_INVENTORY}", text: """
                         [my_group]
                         ${vmPublicIp}
                         """
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
-                     sh "ansible-playbook ansible/install-docker.yml -i ${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
+                     sh "ansible-playbook ansible/install-docker.yml -i $${env.WORKSPACE}/${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
                      }
                     docker.build("${DOCKER_IMAGE}:dev", "-f Dockerfile .")
                     withCredentials([usernamePassword(credentialsId:"DockerHubCreds",passwordVariable:"dockerPass",usernameVariable:"dockerUser")]){
@@ -55,7 +55,7 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){                        
                         ansiblePlaybook(
                             playbook: 'ansible/pull-run-docker-image.yml',
-                            inventory: '${ANSIBLE_INVENTORY}',
+                            inventory: '${env.WORKSPACE}/${ANSIBLE_INVENTORY}',
                             extraVars: [
                                 docker_image: "${env.dockerUser}/${DOCKER_IMAGE}:dev"
                             ],
