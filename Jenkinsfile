@@ -56,7 +56,7 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){                        
                         ansiblePlaybook(
                             playbook: 'ansible/pull-run-docker-image.yml',
-                            inventory: '${env.WORKSPACE}/${ANSIBLE_INVENTORY}',
+                            inventory: '${ANSIBLE_INVENTORY}',
                             extraVars: [
                                 docker_image: "${env.dockerUser}/${DOCKER_IMAGE}:dev"
                             ],
