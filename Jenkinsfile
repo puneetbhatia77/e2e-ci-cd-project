@@ -49,7 +49,7 @@ pipeline {
                     docker.build("${DOCKER_IMAGE}:dev", "-f Dockerfile .")
                     withCredentials([usernamePassword(credentialsId:"DockerHubCreds",passwordVariable:"dockerPass",usernameVariable:"dockerUser")]){
                         sh "docker login -u ${env.dockerUser} -p ${env.dockerPass}"
-                        sh "docker tag mynodejswebapp:dev ${env.dockerUser}/mynodejswebapp:dev"
+                        sh "docker tag ${DOCKER_IMAGE}:dev ${env.dockerUser}/${DOCKER_IMAGE}:dev"
                         sh "docker push ${env.dockerUser}/${DOCKER_IMAGE}:dev"
                     
                         withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){                        
