@@ -28,7 +28,7 @@ pipeline {
                         sh 'terraform apply -var-file="dev.tfvars" -auto-approve'
 
                         // Retrieve the VM public IP address
-                        vmPublicIp = sh(script: 'terraform output -raw vm_public_ip', returnStdout: true).trim()
+                        vmPublicIp = sh(script: 'terraform output -raw public_ip_address', returnStdout: true).trim()
                         username = sh(script: 'terraform output -raw admin_username', returnStdout: true).trim()
                         password = sh(script: 'terraform output -raw admin_password', returnStdout: true).trim()
 
