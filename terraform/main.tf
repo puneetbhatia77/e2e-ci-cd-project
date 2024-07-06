@@ -75,7 +75,7 @@ storage_image_reference {
   }
 }
 
-output "vm_public_ip" {
+output "public_ip_address" {
   value = azurerm_virtual_machine.ProdSrv.public_ip_address
   depends_on = [
     azurerm_virtual_machine.ProdSrv
