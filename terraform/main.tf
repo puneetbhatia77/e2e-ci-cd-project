@@ -74,9 +74,7 @@ storage_image_reference {
     admin_password = var.admin_password
   }
 }
-output "vm_public_ip" {
-  value = azurerm_public_ip.PUB_IP.ip_address
-}
+
 resource "null_resource" "wait_for_vm" {
   provisioner "local-exec" {
     command = <<-EOT
