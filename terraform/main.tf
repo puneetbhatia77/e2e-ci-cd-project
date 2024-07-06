@@ -83,7 +83,7 @@ resource "null_resource" "wait_for_vm" {
       max_attempts=20
       vm_public_ip=""
       while true; do
-        vm_public_ip=$(terraform output -raw vm_ip_address)
+        vm_public_ip=$(terraform output -raw vm_public_ip)
         if [ -z "$vm_public_ip" ]; then
           if [ $attempts -lt $max_attempts ]; then
             echo "VM IP address not available yet. Attempt $((attempts+1))/$max_attempts. Waiting 5 seconds..."
