@@ -90,6 +90,7 @@ resource "null_resource" "wait_for_vm" {
             sleep 10
             attempts=$((attempts+1))
           else
+            echo  "azurerm_public_ip.PUB_IP.ip_address : " azurerm_public_ip.PUB_IP.ip_address
             echo "Failed to fetch VM IP address after $max_attempts attempts."
             exit 1
           fi
