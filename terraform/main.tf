@@ -91,6 +91,9 @@ resource "null_resource" "example" {
 
 output "vm_public_ip" {
   value = azurerm_public_ip.PUB_IP.ip_address
+  depends_on = [
+    null_resource.null_resource
+  ]
 }
 
 output "admin_username" {
