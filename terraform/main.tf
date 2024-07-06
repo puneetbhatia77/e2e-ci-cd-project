@@ -80,20 +80,20 @@ resource "null_resource" "wait_for_vm" {
       # Script to check and wait for VM IP address
       attempts=0
       max_attempts=10
-      azurerm_public_ip=""
-      while [ -z "$azurerm_public_ip" ] && [ $attempts -lt $max_attempts ]; do
-        azurerm_public_ip=$(terraform output -raw azurerm_public_ip)
-        if [ -z "$azurerm_public_ip" ]; then
-          echo "VM IP address not available yet. Waiting 5 seconds..."
+      vm_public_ip=""
+      while [ -z "$vm_public_ip" ] && [ $attempts -lt $max_attempts ]; do
+        vm_public_ip=$(terraform output -raw azurerm_public_ip.PUB_IP.ip_address)
+        if [ -z "$vm_public_ip" ]; then
+          echo "VM IP address not available yet. Waiting 10 seconds..."
           sleep 20
         fi
         attempts=$((attempts+1))
       done
-      if [ -z "$azurerm_public_ip" ]; then
+      if [ -z "$vm_public_ip" ]; then
         echo "Failed to fetch VM IP address after $max_attempts attempts."
         exit 1
       else
-        echo "VM IP address: $azurerm_public_ip"
+        echo "VM IP address: $vm_public_ip"
       fi
     EOT
   }
