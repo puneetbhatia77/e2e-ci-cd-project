@@ -80,10 +80,15 @@ resource "null_resource" "wait_for_vm" {
     command = <<-EOT
       # Script to check and wait for VM IP address
       attempts=0
+       sleep 50
       max_attempts=20
       vm_public_ip=""
+      vm_public_ip=terraform output -raw ${azurerm_public_ip.PUB_IP.ip_address}
+      echo "Puneet : " ${vm_public_ip}
+      exit 0
       while true; do
-        vm_public_ip=$(terraform output -raw vm_public_ip)
+        
+        
         if [ -z "$vm_public_ip" ]; then
           if [ $attempts -lt $max_attempts ]; then
             echo "VM IP address not available yet. Attempt $((attempts+1))/$max_attempts. Waiting 5 seconds..."
