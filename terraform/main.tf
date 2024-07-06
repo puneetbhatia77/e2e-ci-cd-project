@@ -78,7 +78,7 @@ storage_image_reference {
 output "vm_public_ip" {
   value = azurerm_public_ip.PUB_IP.ip_address
   depends_on = [
-    vm_public_ip.PUB_IP
+    azurerm_public_ip.PUB_IP
   ]
 }
 
