@@ -75,43 +75,20 @@ storage_image_reference {
   }
 }
 
-resource "null_resource" "wait_for_vm" {
+resource "null_resource" "example" {
   provisioner "local-exec" {
     command = <<-EOT
-      # Script to check and wait for VM IP address
-      attempts=0
-       sleep 50
-      echo "azurerm_public_ip.PUB_IP.ip_address : ", azurerm_public_ip.PUB_IP.ip_address
-      echo "$azurerm_public_ip.PUB_IP.ip_address : ", ${azurerm_public_ip.PUB_IP.ip_address}
-      max_attempts=20
-      vm_public_ip=""
-      vm_public_ip=terraform output -raw ${azurerm_public_ip.PUB_IP.ip_address}
-      echo "Puneet : " ${vm_public_ip}
-      exit 0
-      while true; do
-        
-        
-        if [ -z "$vm_public_ip" ]; then
-          if [ $attempts -lt $max_attempts ]; then
-            echo "VM IP address not available yet. Attempt $((attempts+1))/$max_attempts. Waiting 5 seconds..."
-            sleep 10
-            attempts=$((attempts+1))
-          else
-            echo  "azurerm_public_ip.PUB_IP.ip_address : " azurerm_public_ip.PUB_IP.ip_address
-            echo "Failed to fetch VM IP address after $max_attempts attempts."
-            exit 1
-          fi
-        else
-          echo "VM IP address: $vm_public_ip"
-          break
-        fi
-      done
+      #!/bin/bash
+      echo "Waiting for VM to be created.."
+      sleep 60
+      echo "Done waiting."
     EOT
   }
   depends_on = [
     azurerm_virtual_machine.ProdSrv
   ]
 }
+
 output "vm_public_ip" {
   value = azurerm_public_ip.PUB_IP.ip_address
 }
