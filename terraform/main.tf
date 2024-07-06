@@ -85,7 +85,7 @@ resource "null_resource" "wait_for_vm" {
         azurerm_public_ip=$(terraform output -raw azurerm_public_ip)
         if [ -z "$azurerm_public_ip" ]; then
           echo "VM IP address not available yet. Waiting 5 seconds..."
-          sleep 5
+          sleep 20
         fi
         attempts=$((attempts+1))
       done
