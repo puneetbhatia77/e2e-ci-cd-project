@@ -90,7 +90,7 @@ resource "null_resource" "example" {
 }
 
 output "vm_public_ip" {
-  value = azurerm_public_ip.PUB_IP.ip_address
+  value = azurerm_virtual_machine.PUB_IP.public_ip_address
 }
 
 output "admin_username" {
