@@ -4,9 +4,7 @@ pipeline {
         ANSIBLE_INVENTORY = 'inventory.ini'
         DOCKER_IMAGE = 'mynodejs-app'
         ANSIBLE_HOST_KEY_CHECKING = 'False'
-    }
-
- def environments = ['dev', 'int', 'prod']
+    } 
     
     stages {
         stage('Setup Environment') {
@@ -20,8 +18,9 @@ pipeline {
             }
         }
 
-    for (environ in environments) {            
-        stage('Provisioning ${environ} environment') {
+       def environments = ['dev', 'int', 'prod']
+       for (environ in environments) {            
+          stage('Provisioning ${environ} environment') {            
             steps {
                 dir('terraform') {
                     script {
