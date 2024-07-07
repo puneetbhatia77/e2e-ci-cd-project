@@ -6,8 +6,8 @@ pipeline {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
     } 
     
-    stages {
-        stage('Setup Environment') {
+ stages {
+    stage('Setup Environment') {
             steps {
                 sh 'sudo apt-get update'
                 sh 'sudo sudo apt-get install -y gnupg software-properties-common curl'
@@ -18,6 +18,7 @@ pipeline {
             }
         }
 
+     stage('Provisioning environment') {  
        def environments = ['dev', 'int', 'prod']
        for (environ in environments) {            
           stage('Provisioning ${environ} environment') {            
@@ -43,8 +44,13 @@ pipeline {
                     }
                 }
             }
-        }  
-         stage('Build and Deploy to ${environ} environment') {
+         }  
+       }   
+         
+        stage('Build and Deploy') {
+          def environments = ['dev', 'int', 'prod']
+          for (environ in environments) {        
+            stage('Build and Deploy to ${environ} environment') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
@@ -68,6 +74,7 @@ pipeline {
                         }
                    }
                }
+             }
             }
         } 
       }  
