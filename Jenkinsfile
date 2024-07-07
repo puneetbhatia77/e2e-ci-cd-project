@@ -5,6 +5,9 @@ pipeline {
         DOCKER_IMAGE = 'mynodejs-app'
         ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
+
+def environments = ['dev', 'int', 'prod']
+    
     stages {
         stage('Setup Environment') {
             steps {
@@ -17,7 +20,8 @@ pipeline {
             }
         }
 
-        stage('Provisioning and configuring Dev environment') {
+    for (environ in environments) {            
+        stage('Provisioning ${environ} environment') {
             steps {
                 dir('terraform') {
                     script {
@@ -25,7 +29,7 @@ pipeline {
                         sh 'terraform init'
 
                         // Create the Azure VM using Terraform
-                        sh 'terraform apply -var-file="dev.tfvars" -auto-approve'
+                        sh 'terraform apply -var-file="${environ}.tfvars" -auto-approve'
 
                         // Retrieve the VM public IP address
                         vmPublicIp = sh(script: 'terraform output -raw public_ip_address', returnStdout: true).trim()
@@ -33,32 +37,32 @@ pipeline {
                         password = sh(script: 'terraform output -raw admin_password', returnStdout: true).trim()
 
                         // Write the inventory file
-                        writeFile file: "${env.WORKSPACE}/${ANSIBLE_INVENTORY}", text: """
-                        [my_group]
+                        writeFile file: "${env.WORKSPACE}/${environ}_${ANSIBLE_INVENTORY}", text: """
+                        ${env}
                         ${vmPublicIp}
                         """
                     }
                 }
             }
         }  
-         stage('Build and Deploy') {
+         stage('Build and Deploy to ${environ} environment') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
-                     sh "ansible-playbook ansible/install-docker.yml -i ${env.WORKSPACE}/${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
+                     sh "ansible-playbook ansible/install-docker.yml -i ${environ}_{env.WORKSPACE}/${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
                      }
-                    docker.build("${DOCKER_IMAGE}:dev", "-f Dockerfile .")
+                    docker.build("${DOCKER_IMAGE}:${environ}", "-f Dockerfile .")
                     withCredentials([usernamePassword(credentialsId:"DockerHubCreds",passwordVariable:"dockerPass",usernameVariable:"dockerUser")]){
                         sh "docker login -u ${env.dockerUser} -p ${env.dockerPass}"
-                        sh "docker tag ${DOCKER_IMAGE}:dev ${env.dockerUser}/${DOCKER_IMAGE}:dev"
-                        sh "docker push ${env.dockerUser}/${DOCKER_IMAGE}:dev"
+                        sh "docker tag ${DOCKER_IMAGE}:${environ} ${env.dockerUser}/${DOCKER_IMAGE}:${environ}"
+                        sh "docker push ${env.dockerUser}/${DOCKER_IMAGE}:${environ}"
                     
                         withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){                        
                         ansiblePlaybook(
                             playbook: 'ansible/pull-run-docker-image.yml',
-                            inventory: '${ANSIBLE_INVENTORY}',
+                            inventory: '${environ}_${ANSIBLE_INVENTORY}',
                             extraVars: [
-                                docker_image: "${env.dockerUser}/${DOCKER_IMAGE}:dev"
+                                docker_image: "${env.dockerUser}/${DOCKER_IMAGE}:${environ}"
                             ],
                             credentialsId: 'sshCreds'
                             )
@@ -66,6 +70,7 @@ pipeline {
                    }
                }
             }
-        }     
+        } 
+      }  
     }
 }
