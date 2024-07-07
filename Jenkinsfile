@@ -6,7 +6,7 @@ pipeline {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
 
- environments = ['dev', 'int', 'prod']
+ def environments = ['dev', 'int', 'prod']
     
     stages {
         stage('Setup Environment') {
@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-    for (${environ} in environments) {            
+    for (environ in environments) {            
         stage('Provisioning ${environ} environment') {
             steps {
                 dir('terraform') {
