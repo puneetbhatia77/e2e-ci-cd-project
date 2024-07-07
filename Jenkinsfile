@@ -48,12 +48,12 @@ pipeline {
          }  
        }   
          
-        stage('Build and Deploy') {
-          def environments = ['dev', 'int', 'prod']
-          for (environ in environments) {        
-            stage('Build and Deploy to ${environ} environment') {
+        stage('Build and Deploy') {          
             steps {
-                script {
+              script {
+                def environments = ['dev', 'int', 'prod']
+                for (environ in environments) {        
+                    stage('Build and Deploy to ${environ} environment') {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
                      sh "ansible-playbook ansible/install-docker.yml -i ${environ}_{env.WORKSPACE}/${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
                      }
