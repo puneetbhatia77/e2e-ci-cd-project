@@ -23,7 +23,7 @@ pipeline {
               script {
                  // Initialize Terraform
                  sh 'terraform init'
-                 def environments = ['dev', 'int', 'prod']
+                 def environments = ['dev']
                  for (environ in environments) {            
                     dir("terraform") {
                     stage("Provisioning ${environ} environment") { 
@@ -53,7 +53,7 @@ pipeline {
         stage('Build and Deploy') {          
             steps {
               script {
-                def environments = ['dev', 'int', 'prod']
+                def environments = ['dev']
                 for (environ in environments) {        
                     stage("Build and Deploy to ${environ} environment") {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
