@@ -31,7 +31,7 @@ pipeline {
                         sh "terraform workspace new ${environ}"
 
                         // Create the Azure VM using Terraform
-                        sh "terraform apply --chdir=.. -var-file=${environ}.tfvars -auto-approve"
+                        sh "terraform apply -var-file=${environ}.tfvars -auto-approve"
 
                         // Retrieve the VM public IP address
                         vmPublicIp = sh(script: 'terraform output -raw public_ip_address', returnStdout: true).trim()
