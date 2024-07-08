@@ -28,7 +28,7 @@ pipeline {
                     dir("terraform") {
                     stage("Provisioning ${environ} environment") { 
                         // Create terraform workspace
-                        terraform workspace new ${environ}
+                        sh "terraform workspace new ${environ}"
 
                         // Create the Azure VM using Terraform
                         sh "terraform apply --chdir=.. -var-file=${environ}.tfvars -auto-approve"
