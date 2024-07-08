@@ -19,11 +19,11 @@ pipeline {
         }
 
      stage('Provisioning environments') {   
-         stages{
             steps {
               script {
                  // Initialize Terraform
                  sh 'terraform init'
+                stages{
                  def environments = ['dev', 'int', 'prod']
                  for (environ in environments) {            
                     dir("terraform") {
