@@ -17,7 +17,6 @@ pipeline {
                 sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
             }
 
-          steps {
               script {
                  // Initialize Terraform
                  sh 'terraform init'
@@ -43,7 +42,7 @@ pipeline {
                       }
                     }
                 }
-            }
+            
          }  
        }   
          
