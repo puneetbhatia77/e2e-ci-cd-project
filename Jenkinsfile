@@ -8,7 +8,7 @@ pipeline {
     
  stages {
     stage('Setup Environment') {
-            steps {
+        steps {
                 sh 'sudo apt-get update'
                 sh 'sudo sudo apt-get install -y gnupg software-properties-common curl'
                 sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
@@ -16,10 +16,8 @@ pipeline {
                 sh 'sudo apt-get install -y nodejs npm terraform ansible'
                 sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
             }
-        }
 
-     stage('Provisioning environments') {   
-            steps {
+          steps {
               script {
                  // Initialize Terraform
                  sh 'terraform init'
