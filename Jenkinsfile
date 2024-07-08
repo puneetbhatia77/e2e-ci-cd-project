@@ -8,15 +8,19 @@ pipeline {
     
  stages {
     stage('Setup Environment') {
-        steps {
-            script {
+            steps {
                 sh 'sudo apt-get update'
                 sh 'sudo sudo apt-get install -y gnupg software-properties-common curl'
                 sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
                 sh 'sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
                 sh 'sudo apt-get install -y nodejs npm terraform ansible'
                 sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+            }
+        }
 
+     stage('Provisioning environments') {   
+            steps {
+              script {
                  // Initialize Terraform
                  sh 'terraform init'
                  def environments = ['dev', 'int', 'prod']
@@ -42,7 +46,6 @@ pipeline {
                     }
                 }
             }
-          }
          }  
        }   
          
