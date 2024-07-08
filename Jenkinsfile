@@ -26,10 +26,10 @@ pipeline {
                         dir("terraform/${environ}") {
                         stage("Provisioning ${environ} environment") { 
                         // Initialize Terraform
-                        sh 'terraform chdir=.. init'
+                        sh 'terraform --chdir=.. init'
 
                         // Create the Azure VM using Terraform
-                        sh "terraform apply chdir=.. -var-file=${environ}.tfvars -auto-approve"
+                        sh "terraform apply --chdir=.. -var-file=${environ}.tfvars -auto-approve"
 
                         // Retrieve the VM public IP address
                         vmPublicIp = sh(script: 'terraform output -raw public_ip_address', returnStdout: true).trim()
