@@ -21,12 +21,12 @@ pipeline {
      stage('Provisioning environments') {   
             steps {
               script {
-                 // Initialize Terraform
-                 sh 'terraform init'
-                 def environments = ['dev', 'int', 'prod']
-                 for (environ in environments) {            
-                    dir("terraform") {
-                    stage("Provisioning ${environ} environment") { 
+                   // Initialize Terraform
+                   dir("terraform") {  
+                   sh 'terraform init'
+                   def environments = ['dev', 'int', 'prod']
+                   for (environ in environments) {            
+                      stage("Provisioning ${environ} environment") { 
                         // Create terraform workspace
                         sh "terraform workspace new ${environ}"
 
