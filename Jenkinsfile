@@ -24,12 +24,12 @@ pipeline {
                     script {
                      def environments = ['dev', 'int', 'prod']
                      for (environ in environments) {            
-                        stage('Provisioning ${environ} environment') { 
+                        stage("Provisioning ${environ} environment") { 
                         // Initialize Terraform
                         sh 'terraform init'
 
                         // Create the Azure VM using Terraform
-                        sh 'terraform apply -var-file="${environ}.tfvars" -auto-approve'
+                        sh "terraform apply -var-file=${environ}.tfvars -auto-approve"
 
                         // Retrieve the VM public IP address
                         vmPublicIp = sh(script: 'terraform output -raw public_ip_address', returnStdout: true).trim()
@@ -53,7 +53,7 @@ pipeline {
               script {
                 def environments = ['dev', 'int', 'prod']
                 for (environ in environments) {        
-                    stage('Build and Deploy to ${environ} environment') {
+                    stage("Build and Deploy to ${environ} environment") {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
                      sh "ansible-playbook ansible/install-docker.yml -i ${environ}_{env.WORKSPACE}/${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
                      }
@@ -65,8 +65,8 @@ pipeline {
                     
                         withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){                        
                         ansiblePlaybook(
-                            playbook: 'ansible/pull-run-docker-image.yml',
-                            inventory: '${environ}_${ANSIBLE_INVENTORY}',
+                            playbook: "ansible/pull-run-docker-image.yml",
+                            inventory: "${environ}_${ANSIBLE_INVENTORY}",
                             extraVars: [
                                 docker_image: "${env.dockerUser}/${DOCKER_IMAGE}:${environ}"
                             ],
