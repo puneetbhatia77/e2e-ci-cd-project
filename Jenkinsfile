@@ -21,12 +21,14 @@ pipeline {
      stage('Provisioning environment') {                    
             steps {
               script {
+                 // Initialize Terraform
+                 sh 'terraform init'
                  def environments = ['dev', 'int', 'prod']
                  for (environ in environments) {            
-                        dir("terraform/${environ}") {
-                        stage("Provisioning ${environ} environment") { 
-                        // Initialize Terraform
-                        sh 'terraform --chdir=.. init'
+                    dir("terraform") {
+                    stage("Provisioning ${environ} environment") { 
+                        // Create terraform workspace
+                        terraform workspace new ${environ}
 
                         // Create the Azure VM using Terraform
                         sh "terraform apply --chdir=.. -var-file=${environ}.tfvars -auto-approve"
