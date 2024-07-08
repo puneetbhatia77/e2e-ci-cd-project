@@ -28,8 +28,6 @@ pipeline {
                     dir("terraform") {
                     stage("Provisioning ${environ} environment") { 
                         // Create terraform workspace
-                        sh "terraform workspace select default"
-                        sh "terraform workspace delete ${environ}"
                         sh "terraform workspace new ${environ}"
 
                         // Create the Azure VM using Terraform
