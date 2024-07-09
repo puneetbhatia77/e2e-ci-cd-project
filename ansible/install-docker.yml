@@ -15,8 +15,10 @@
         state: present
 
     - name: Install docker-compose
-      pip3: docker-compose
-      state: present  
+      pip: 
+        name: docker-compose
+        state: present
+        executable: pip3
 
     - name: Add Docker's official GPG key
       apt_key:
