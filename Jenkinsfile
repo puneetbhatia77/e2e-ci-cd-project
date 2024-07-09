@@ -13,7 +13,10 @@ pipeline {
                 sh 'sudo sudo apt-get install -y gnupg software-properties-common curl sshpass'
                 sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
                 sh 'sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"'
-                sh 'sudo apt-get install -y nodejs npm terraform ansible'
+                sh 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
+                sh 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'
+                sh 'sudo apt-get install -y nodejs npm terraform ansible docker-ce'
+                sh 'sudo systemctl status docker'
                 sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
             }
         }
