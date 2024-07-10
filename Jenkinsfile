@@ -1,4 +1,5 @@
 pipeline {
+    cleanWs()
     agent any
  environment {
         ANSIBLE_INVENTORY = 'inventory.ini'
@@ -9,7 +10,6 @@ pipeline {
  stages {
     stage('Setup Environment') {
             steps {
-                cleanWs()
                 sh 'sudo apt-get update'
                 sh 'sudo sudo apt-get install -y gnupg software-properties-common curl sshpass'
                 sh 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
