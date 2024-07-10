@@ -12,8 +12,8 @@
           - software-properties-common
         state: present
 
-   - name: Install Python3 and pip3
-     ansible.builtin.apt:
+    - name: Install Python3 and pip3
+      ansible.builtin.apt:
         name:
           - python3
           - python3-pip
