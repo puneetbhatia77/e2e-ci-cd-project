@@ -1,5 +1,4 @@
 pipeline {
-    cleanWs()
     agent any
  environment {
         ANSIBLE_INVENTORY = 'inventory.ini'
