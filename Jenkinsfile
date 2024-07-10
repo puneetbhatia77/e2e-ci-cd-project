@@ -41,9 +41,11 @@ pipeline {
                         username = sh(script: 'terraform output -raw admin_username', returnStdout: true).trim()
                         password = sh(script: 'terraform output -raw admin_password', returnStdout: true).trim()
 
+                        sh "rm -f ${env.WORKSPACE}/${environ}_${ANSIBLE_INVENTORY}"
+                          
                         // Write the inventory file
                         writeFile file: "${env.WORKSPACE}/${environ}_${ANSIBLE_INVENTORY}", text: """
-                        ${vmPublicIp}
+                        ${vmPublicIp.trim()}
                         """
                       }
                     }
@@ -59,7 +61,7 @@ pipeline {
                 for (environ in environments) {        
                     stage("Build and Deploy to ${environ} environment") {
                     withCredentials([usernamePassword(credentialsId:"sshCreds",passwordVariable:"sshPass",usernameVariable:"sshUser")]){
-                     sh "ansible-playbook ansible/install-docker.yml -i ${env.WORKSPACE}/${environ}_${ANSIBLE_INVENTORY} -e ansible_ssh_user=${env.sshUser} -e ansible_ssh_pass=${env.sshPass}"
+                     sh "ansible-playbook -i ${env.WORKSPACE}/${environ}_${ANSIBLE_INVENTORY} ansible/install-docker.yml  -e ansible_ssh_user=${env.sshUser.trim()} -e ansible_ssh_pass=${env.sshPass.trim()}
                      }
                     docker.build("${DOCKER_IMAGE}:${environ}", "-f Dockerfile .")
                     withCredentials([usernamePassword(credentialsId:"DockerHubCreds",passwordVariable:"dockerPass",usernameVariable:"dockerUser")]){
